@@ -1,17 +1,65 @@
 import React from 'react'
 
 export default class ContactDetail extends React.Component {
-	render() {
-		const isSelected = (<div>{this.props.contact.name} {this.props.contact.phone}</div>)
-		const blank = (<div>blank</div>)
+	constructor(props) {
+		super(props)
 
-		return (
+		this.state = {
+			isEdit: false,
+			name:"",
+			phone:""
+		}
+
+		this.handleClick = this.handleClick.bind(this)
+		this.handleToggle = this.handleToggle.bind(this)
+	}
+	
+	handleClick() {
+		console.log('click')
+		{this.props.onRemove()}
+	}
+
+	handleEdit() {
+		if(this.state.name && this.state.phone){
+			{this.props.onEdit(this.state.name,this.state.phone)}
+		}	
+	}
+
+	handleToggle() {
+		if(this.state.isEdit) {
+			this.handleEdit()
+		}
+		this.setState({
+			isEdit: !this.state.isEdit
+		}) 
+	}
+
+	handleChange(e) {
+		let nextState ={}
+		nextState[e.target.name] = e.target.value
+		this.setState(nextState)
+	}
+	render() {
+		const editDiv = (
 			<div>
-				<h2>Datail</h2>
-				<div>
-					{this.props.isSelected? isSelected:blank}
-				</div>
+				<input 
+					name="name" onChange={e=>this.handleChange(e)} placeholder={this.props.contact.name}
+				/>
+				<input
+					name="phone" onChange={e=>this.handleChange(e)} placeholder={this.props.contact.phone}
+				/>
 			</div>
+			)
+		return (
+				<div> 
+					<h2>Detail</h2>
+					{this.props.contact.name} {this.props.contact.phone}
+					<div>
+						{this.state.isEdit? editDiv: ""}
+						<button onClick={this.handleToggle}>{this.state.isEdit? "OK": "Edit"}</button>
+						<button onClick={this.handleClick}>Remove</button>
+					</div>
+				</div>
 			)
 	}
 }
